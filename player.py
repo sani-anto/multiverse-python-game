@@ -11,27 +11,27 @@ class Player:
         self.stats = {
         "strength": {
             "value": strength,
-            "modifier": calculate_modifier(strength)
+            "modifier": self.calculate_modifier(strength)
             },
         "dexterity": {
             "value": dexterity,
-            "modifier": calculate_modifier(dexterity)
+            "modifier": self.calculate_modifier(dexterity)
             },
         "constitution": {
             "value": constitution,
-            "modifier": calculate_modifier(constitution)
+            "modifier": self.calculate_modifier(constitution)
             },
         "intelligence": {
             "value": intelligence,
-            "modifier": calculate_modifier(intelligence)
+            "modifier": self.calculate_modifier(intelligence)
             },
         "wisdom": {
             "value": wisdom,
-            "modifier": calculate_modifier(wisdom)
+            "modifier": self.calculate_modifier(wisdom)
             },
         "charisma": {
             "value": charisma,
-            "modifier": calculate_modifier(charisma)
+            "modifier": self.calculate_modifier(charisma)
             }
         }
         self.max_hp = 15 + self.stats["constitution"]["modifier"]
@@ -41,7 +41,7 @@ class Player:
     def __str__(self):
         return f'''
 ---------------------------------------------
-Hero Name: {self.name}
+Name: {self.name}
     HP:  {self.current_hp}/{self.max_hp}
     Str: {self.stats["strength"]["value"]}
     Dex: {self.stats["dexterity"]["value"]}
@@ -61,15 +61,20 @@ Hero Name: {self.name}
         return self.stats[attribute]["modifier"]
     
 
+    def calculate_modifier(attribute):
+        modifier = (attribute - 10) // 2
+        return modifier
+    
+
     def change_stat(self, attribute: str, value: int):
         self.stats.update({
             attribute: {
             "value": value,
-            "modifier": calculate_modifier(value)
+            "modifier": self.calculate_modifier(value)
             }
         })
 
-        if attribute == "consitution":
+        if attribute == "constitution":
             self.max_hp = 15 + self.stats["constitution"]["modifier"]
         
         return self.stats
@@ -78,10 +83,3 @@ Hero Name: {self.name}
     def lose_hp(self, dmg: int) -> int:
         self.current_hp -= dmg
         return self.current_hp
-
-    
-    
-def calculate_modifier(attribute):
-    modifier = (attribute - 10) // 2
-    return modifier
-    
