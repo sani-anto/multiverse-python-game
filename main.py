@@ -1,4 +1,6 @@
 import json
+import sys
+
 from random import randint
 from time import sleep
 
@@ -11,28 +13,26 @@ from classes.dice import d4, d6, d8, d10, d12, d20
 def main_game():
     score = 0
 
-    sleep(text_delay)
-    print("\nNEW ADVENTURE")
+    slow_text("NEW ADVENTURE")
     player = create_player()
-    sleep(text_delay)
-    print(player)
+    delay_text(player)
 
     while player.current_hp > 0:
         begin_combat(player, create_creature())
         score += 10
 
-    print(f"Score: {score}")
+    slow_text(f"Score: {score}")
 
 
 def create_player():
-    sleep(text_delay)
-    player_name = input("Please Enter Your Name: ")
-    sleep(text_delay)
-    player_class = input("Are you a Wizard or a Warrior?\n").lower()
+    slow_text("Please Enter Your Name")
+    player_name = input()
+    slow_text("Are you a Wizard or a Warrior?")
+    player_class = input().lower()
 
     while player_class not in ["wizard", "warrior"]:
-        sleep(text_delay)
-        player_class = input("Please choose Wizard or Warrior\n").lower()
+        slow_text("Please choose Wizard or Warrior")
+        player_class = input().lower()
     
     if player_class == "warrior":
         player = Warrior(name=player_name, 
@@ -68,21 +68,21 @@ def create_creature():
 
 
 def begin_combat(player, enemy):
-    sleep(text_delay)
-    print("You've been ambushed!")
-    print(enemy)
+    slow_text("You've been ambushed!")
+    delay_text(enemy)
     turn_count = 0
 
     while player.current_hp > 0 and enemy.current_hp > 0:
         turn_count += 1
-        sleep(text_delay)
-        print(f"\nTurn {turn_count}:\nWhat do you do?")
+        slow_text(f"\nTurn {turn_count}:")
+        slow_text("What do you do?")
         for action in player.actions:
-            print(action)
+            slow_text(action)
 
         turn_action = input("\n").title()
         while turn_action not in player.actions:
-            turn_action = input("Please choose a valid action\n").title()
+            slow_text("Please choose a valid action")
+            turn_action = input().title()
         
         # currently only works for damage actions. 
         # need to figure out system for misc actions e.g. healing, taunting
@@ -90,21 +90,17 @@ def begin_combat(player, enemy):
             player.actions[turn_action]["mod"], 
             player.actions[turn_action]["die"].roll())
         enemy.current_hp -= damage
-        sleep(text_delay)
-        print(f"Enemy HP: {enemy.current_hp}/{enemy.max_hp}")
+        slow_text(f"Enemy HP: {enemy.current_hp}/{enemy.max_hp}")
 
         # need to implement hit chance for enemies
         if enemy.current_hp > 0:
             damage_received = d6.roll()["result"]
-            sleep(text_delay)
-            print(f"You were hit for {damage_received}!")
+            slow_text(f"You were hit for {damage_received}!")
             player.current_hp -= damage_received
-            sleep(text_delay)
-            print(f"Player HP: {player.current_hp}/{player.max_hp}")
+            slow_text(f"Player HP: {player.current_hp}/{player.max_hp}")
 
     if enemy.current_hp <= 0:
-        sleep(text_delay)
-        print('''
+        delay_text('''
        _      _                   
       (_)    | |                  
 __   ___  ___| |_ ___  _ __ _   _ 
@@ -116,8 +112,7 @@ __   ___  ___| |_ ___  _ __ _   _
 ''')
 
     if player.current_hp <= 0:
-        sleep(text_delay)
-        print('''
+        delay_text('''
     
     _       __           _   
     | |     / _|         | |  
@@ -130,9 +125,20 @@ __| | ___| |_ ___  __ _| |_
 ''')
 
 
+def slow_text(text, speed=0.05, change_end='\n'):
+    for letter in text:
+        if letter == ' ':
+            print(letter,end='')
+        else:
+            sleep(speed)
+            print(letter,end='')
+            sys.stdout.flush()
+    print(end=change_end)
+    sleep(0.5)
 
-# DEFINE GLOBAL VARIABLES HERE
-text_delay = 0.75
+def delay_text(text, delay=0.75):
+    sleep(delay)
+    print(text)
 
 f = open('data/first-names.json')
 first_names = json.load(f)
