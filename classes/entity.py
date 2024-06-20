@@ -52,7 +52,7 @@ Name: {self.name}
 ---------------------------------------------
         '''
     
-
+    # Some functions not currently being used, may be used in the future
     def get_stat(self, attribute: str):
         return self.stats[attribute]["value"]
     
