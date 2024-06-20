@@ -1,7 +1,8 @@
-from player import Player
-from actions import slash, kick, heal, taunt
+from classes.entity import Entity
+from classes.actions import slash, kick, heal, taunt
+from classes.dice import d4, d6, d8, d10, d12, d20
 
-class Warrior(Player):
+class Warrior(Entity):
     def __init__(self,
                 name: str, 
                 strength: int, 
@@ -10,7 +11,7 @@ class Warrior(Player):
                 intelligence: int, 
                 wisdom: int, 
                 charisma: int):
-        Player.__init__(self, 
+        Entity.__init__(self, 
                  name, 
                  strength, 
                  dexterity, 
@@ -21,19 +22,23 @@ class Warrior(Player):
         self.vocation = "Warrior"
         self.actions = {"Slash": {
                             "func": slash,
-                            "mod": self.get_modifier("strength")
+                            "mod": self.get_modifier("strength"),
+                            "die": d8
                             },
                         "Kick": {
                             "func": kick,
-                            "mod": self.get_modifier("strength")
+                            "mod": self.get_modifier("strength"),
+                            "die": d4
                             }, 
                         "Heal": {
                             "func": heal,
-                            "mod": self.get_modifier("wisdom")
+                            "mod": self.get_modifier("wisdom"),
+                            "die": d6
                             },
                         "Taunt": {
                             "func": taunt,
-                            "mod": self.get_modifier("charisma")
+                            "mod": self.get_modifier("charisma"),
+                            "die": d20
                             }
                         }
 

@@ -1,14 +1,15 @@
-from vocations.warrior import Warrior
-from vocations.wizard import Wizard
+import json
 from random import randint
 
-
+from classes.entity import Entity
+from classes.vocations.warrior import Warrior
+from classes.vocations.wizard import Wizard
 
 def main_game():
-    print("NEW ADVENTURE")
+    print("\nNEW ADVENTURE")
     player = create_player()
     print(player)
-    begin_combat(player)
+    begin_combat(player, create_creature())
 
 def create_player():
     player_name = input("Please Enter Your Name: ")
@@ -37,8 +38,20 @@ def create_player():
 
     return player
 
-def begin_combat(player):
+def create_creature():
+    creature_name = f"{first_names[randint(0, len(first_names) - 1)]} {surnames[randint(0, len(surnames) - 1)]}"
+
+    return Entity(name=creature_name, 
+            strength=randint(8, 18), 
+            dexterity=randint(8, 18), 
+            constitution=randint(8, 18), 
+            intelligence=randint(8, 18), 
+            wisdom=randint(8, 18), 
+            charisma=randint(8, 18))
+
+def begin_combat(player, enemy):
     print("You've been ambushed!")
+    print(enemy)
     turn_count = 0
 
     while player.current_hp != 0:
@@ -51,8 +64,16 @@ def begin_combat(player):
         while turn_action not in player.actions:
             input("Please choose a valid action\n").capitalize()
         
-        player.actions[turn_action]["func"](player.actions[turn_action]["mod"])
+        player.actions[turn_action]["func"](
+            player.actions[turn_action]["mod"], 
+            player.actions[turn_action]["die"].roll())
 
+f = open('data/first-names.json')
+first_names = json.load(f)
+f.close()
 
+f = open('data/names.json')
+surnames = json.load(f)
+f.close()
 
 main_game()

@@ -1,4 +1,4 @@
-class Player:
+class Entity:
     def __init__(self, 
                  name: str, 
                  strength: int, 
@@ -61,7 +61,7 @@ Name: {self.name}
         return self.stats[attribute]["modifier"]
     
 
-    def calculate_modifier(attribute):
+    def calculate_modifier(self, attribute):
         modifier = (attribute - 10) // 2
         return modifier
     
